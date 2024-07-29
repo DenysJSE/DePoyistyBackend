@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  email    String @unique
+  password String
+
+  name String @default("")
+  city City
+
+  favorites Dish[]
+  reviews   Review[]
+}
+
+model Restaurant {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name    String
+  slug    String
+  city    City
+  address String
+  rating  Int    @default(0)
+
+  menu    Dish[]
+  reviews Review[]
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name String
+  slug String
+
+  dishes Dish[]
+}
+
+model Dish {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String
+  slug        String
+  description String
+  price       Int
+  rating      Int    @default(0)
+
+  reviews Review[]
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @map("user_id")
+
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?      @map("category_id")
+
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId Int?        @map("restaurant_id")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  text   String
+  rating Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId Int?        @map("restaurant_id")
+
+  dish   Dish? @relation(fields: [dishId], references: [id])
+  dishId Int?  @map("dish_id")
+}
+
+enum City {
+  Cherkasy
+  Chernihiv
+  Chernivtsi
+  Dnipro
+  Donetsk
+  Ivano_Frankivsk
+  Kharkiv
+  Kherson
+  Khmelnytskyi
+  Kropyvnytskyi
+  Krym
+  Kyiv
+  Luhansk
+  Lutsk
+  Lviv
+  Mykolaiv
+  Odesa
+  Poltava
+  Rivne
+  Sumy
+  Ternopil
+  Uzhhorod
+  Vinnytsia
+  Zaporizhzhia
+  Zhytomyr
+}
