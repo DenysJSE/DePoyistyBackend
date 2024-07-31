@@ -18,6 +18,11 @@ model User {
   name String @default("")
   city City
 
+  isAdmin Boolean @default(false) @map("is_admin")
+
+  isEmailVerified   Boolean @default(false) @map("is_email_verified")
+  verificationToken String? @map("verification_token")
+
   favorites Dish[]
   reviews   Review[]
 }
