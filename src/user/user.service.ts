@@ -5,16 +5,17 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { UserDto } from './dto/user.dto'
-import { City } from '@prisma/client'
+import { City, Prisma } from '@prisma/client'
 import { hash } from 'bcrypt'
 import { checkIdIsNumber } from '../utils/id-is-number'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { returnUserObject } from './return-user.object'
 
 @Injectable()
 export class UserService {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async createUser(userDto: UserDto) {
+	async createUser(userDto: UserDto, verificationToken: string) {
 		const existUser = await this.getUserByEmail(userDto.email)
 		if (existUser)
 			throw new BadRequestException(
@@ -26,16 +27,21 @@ export class UserService {
 				email: userDto.email,
 				password: await hash(userDto.password, 10),
 				name: userDto.name,
-				city: City[userDto.city]
+				city: City[userDto.city],
+				verificationToken
 			}
 		})
 	}
 
-	async getUserById(userId: number) {
+	async getUserById(userId: number, selectObject: Prisma.UserSelect = {}) {
 		const id = checkIdIsNumber(userId)
 
 		const user = await this.prisma.user.findUnique({
-			where: { id }
+			where: { id },
+			select: {
+				...returnUserObject,
+				...selectObject
+			}
 		})
 		if (!user)
 			throw new NotFoundException(`The user with id: ${id} was not found!`)
@@ -68,7 +74,8 @@ export class UserService {
 					: user.password,
 				name: userDto.name,
 				city: City[userDto.city]
-			}
+			},
+			select: returnUserObject
 		})
 	}
 
@@ -79,5 +86,11 @@ export class UserService {
 		await this.prisma.user.delete({ where: { id } })
 
 		return { message: `The user with id: ${id} was successfully deleted!` }
+	}
+
+	async findUserByToken(token: string) {
+		return this.prisma.user.findFirst({
+			where: { verificationToken: token }
+		})
 	}
 }
