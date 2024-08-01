@@ -12,13 +12,15 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email    String @unique
-  password String
+  email    String  @unique
+  password String?
 
   name String @default("")
-  city City
+  city City?
 
   isAdmin Boolean @default(false) @map("is_admin")
+
+  isGoogleAuth Boolean @default(false) @map("is_google_auth")
 
   isEmailVerified   Boolean @default(false) @map("is_email_verified")
   verificationToken String? @map("verification_token")

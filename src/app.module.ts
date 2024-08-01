@@ -7,9 +7,11 @@ import { PrismaService } from './prisma.service'
 import { ConfigModule } from '@nestjs/config'
 import { MailModule } from './mail/mail.module'
 import { MailerModule } from '@nestjs-modules/mailer'
+import { PassportModule } from '@nestjs/passport'
 
 @Module({
 	imports: [
+		PassportModule.register({ session: true }),
 		MailerModule.forRoot({
 			transport: {
 				host: process.env.EMAIL_HOST,

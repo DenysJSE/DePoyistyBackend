@@ -15,7 +15,7 @@ import { returnUserObject } from './return-user.object'
 export class UserService {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async createUser(userDto: UserDto, verificationToken: string) {
+	async createUser(userDto: UserDto, verificationToken?: string) {
 		const existUser = await this.getUserByEmail(userDto.email)
 		if (existUser)
 			throw new BadRequestException(
@@ -25,10 +25,12 @@ export class UserService {
 		return this.prisma.user.create({
 			data: {
 				email: userDto.email,
-				password: await hash(userDto.password, 10),
+				password: userDto.password ? await hash(userDto.password, 10) : null,
 				name: userDto.name,
-				city: City[userDto.city],
-				verificationToken
+				city: userDto.city ? City[userDto.city] : null,
+				verificationToken,
+				isGoogleAuth: userDto.isGoogleAuth,
+				isEmailVerified: userDto.isEmailVerified
 			}
 		})
 	}

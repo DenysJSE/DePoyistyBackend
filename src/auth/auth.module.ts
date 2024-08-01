@@ -10,15 +10,19 @@ import { getJwtConfig } from '../config/jwt.config'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { MailService } from '../mail/mail.service'
 import { MailModule } from '../mail/mail.module'
+import { GoogleStrategy } from './strategies/google.strategy'
+import { SessionSerializer } from './serializer'
 
 @Module({
 	controllers: [AuthController],
 	providers: [
 		AuthService,
 		JwtStrategy,
+		GoogleStrategy,
 		PrismaService,
 		UserService,
-		MailService
+		MailService,
+		SessionSerializer
 	],
 	imports: [
 		UserModule,

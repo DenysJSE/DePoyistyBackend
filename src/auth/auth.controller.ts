@@ -8,6 +8,7 @@ import {
 	Req,
 	Res,
 	UnauthorizedException,
+	UseGuards,
 	UsePipes,
 	ValidationPipe
 } from '@nestjs/common'
@@ -15,6 +16,7 @@ import { AuthService } from './auth.service'
 import { UserDto } from '../user/dto/user.dto'
 import { Request, Response } from 'express'
 import { AuthDto } from './dto/auth.dto'
+import { GoogleGuard } from './guards/google.guard'
 
 @Controller('auth')
 export class AuthController {
@@ -79,5 +81,22 @@ export class AuthController {
 	@Get('verify-email')
 	async verifyEmail(@Query('token') token: string) {
 		return this.authService.verifyEmail(token)
+	}
+
+	@Get('google/login')
+	@UseGuards(GoogleGuard)
+	async oAuthGoogle() {}
+
+	@Get('google/callback')
+	@UseGuards(GoogleGuard)
+	async oAuthGoogleCallback(
+		@Req() req: Request,
+		@Res({ passthrough: true }) res: Response
+	) {
+		const user = req.user as UserDto
+		const { refreshToken, ...response } = await this.authService.login(user)
+		this.authService.addRefreshTokenToResponse(res, refreshToken)
+
+		return response
 	}
 }

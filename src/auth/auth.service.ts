@@ -78,8 +78,10 @@ export class AuthService {
 				`The user with email: "${dto.email}" was not found!`
 			)
 
-		const isValid = await bcrypt.compare(dto.password, user.password)
-		if (!isValid) throw new BadRequestException('Invalid password!')
+		if (!user.isGoogleAuth) {
+			const isValid = await bcrypt.compare(dto.password, user.password)
+			if (!isValid) throw new BadRequestException('Invalid password!')
+		}
 
 		return user
 	}
@@ -125,7 +127,34 @@ export class AuthService {
 		})
 	}
 
-	//oAuth
+	async oAuthGoogle(googleUser: UserDto) {
+		const user = await this.userService.getUserByEmail(googleUser.email)
+		if (!user) {
+			const dto = {
+				email: googleUser.email,
+				name: googleUser.name,
+				password: null,
+				city: null,
+				isEmailVerified: true,
+				isGoogleAuth: true,
+				verificationToken: null
+			}
+
+			const responseUser = await this.userService.createUser(dto)
+			const tokens = await this.createTokens(responseUser.id)
+
+			return {
+				...responseUser,
+				...tokens
+			}
+		}
+
+		const tokens = await this.createTokens(user.id)
+		return {
+			...user,
+			...tokens
+		}
+	}
 
 	private async generateEmailVerificationToken() {
 		return uuidv4()
