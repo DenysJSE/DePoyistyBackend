@@ -134,7 +134,7 @@ export class AuthService {
 				email: googleUser.email,
 				name: googleUser.name,
 				password: null,
-				city: null,
+				// city: null,
 				isEmailVerified: true,
 				isGoogleAuth: true,
 				verificationToken: null
@@ -182,7 +182,7 @@ export class AuthService {
 			id: user.id,
 			email: user.email,
 			name: user.name,
-			city: user.city,
+			// city: user.city,
 			isAdmin: user.isAdmin
 		}
 	}

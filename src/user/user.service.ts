@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { UserDto } from './dto/user.dto'
-import { City, Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { hash } from 'bcrypt'
 import { checkIdIsNumber } from '../utils/id-is-number'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -27,7 +27,7 @@ export class UserService {
 				email: userDto.email,
 				password: userDto.password ? await hash(userDto.password, 10) : null,
 				name: userDto.name,
-				city: userDto.city ? City[userDto.city] : null,
+				// city: userDto.city ? City[userDto.city] : null,
 				verificationToken,
 				isGoogleAuth: userDto.isGoogleAuth,
 				isEmailVerified: userDto.isEmailVerified
@@ -74,8 +74,8 @@ export class UserService {
 				password: userDto.password
 					? await hash(userDto.password, 10)
 					: user.password,
-				name: userDto.name,
-				city: City[userDto.city]
+				name: userDto.name
+				// city: City[userDto.city]
 			},
 			select: returnUserObject
 		})
