@@ -29,6 +29,10 @@ export class AuthService {
 			throw new BadRequestException(
 				`The email: ${userDto.email} you provided already exist!`
 			)
+		if (!userDto.password)
+			throw new BadRequestException(
+				'You need to provide password, it should be at least 6 character long!'
+			)
 
 		const verificationToken = await this.generateEmailVerificationToken()
 
