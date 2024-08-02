@@ -16,7 +16,7 @@ model User {
   password String?
 
   name String @default("")
-  city City?
+  // city City?
 
   isAdmin Boolean @default(false) @map("is_admin")
 
@@ -34,9 +34,9 @@ model Restaurant {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name    String
-  slug    String
-  city    City
+  name    String @unique
+  slug    String @unique
+  // city    City
   address String
   rating  Int    @default(0)
 
@@ -96,30 +96,30 @@ model Review {
   dishId Int?  @map("dish_id")
 }
 
-enum City {
-  Cherkasy
-  Chernihiv
-  Chernivtsi
-  Dnipro
-  Donetsk
-  Ivano_Frankivsk
-  Kharkiv
-  Kherson
-  Khmelnytskyi
-  Kropyvnytskyi
-  Krym
-  Kyiv
-  Luhansk
-  Lutsk
-  Lviv
-  Mykolaiv
-  Odesa
-  Poltava
-  Rivne
-  Sumy
-  Ternopil
-  Uzhhorod
-  Vinnytsia
-  Zaporizhzhia
-  Zhytomyr
-}
+// enum City {
+//   Cherkasy
+//   Chernihiv
+//   Chernivtsi
+//   Dnipro
+//   Donetsk
+//   Ivano_Frankivsk
+//   Kharkiv
+//   Kherson
+//   Khmelnytskyi
+//   Kropyvnytskyi
+//   Krym
+//   Kyiv
+//   Luhansk
+//   Lutsk
+//   Lviv
+//   Mykolaiv
+//   Odesa
+//   Poltava
+//   Rivne
+//   Sumy
+//   Ternopil
+//   Uzhhorod
+//   Vinnytsia
+//   Zaporizhzhia
+//   Zhytomyr
+// }

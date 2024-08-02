@@ -1,11 +1,4 @@
-import {
-	IsEmail,
-	IsEnum,
-	IsOptional,
-	IsString,
-	MinLength
-} from 'class-validator'
-import { CityEnum } from '../../enums/city.enum'
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator'
 
 export class UserDto {
 	@IsEmail()
@@ -19,10 +12,10 @@ export class UserDto {
 	@IsString()
 	name: string
 
-	@IsString()
-	@IsOptional()
-	@IsEnum(CityEnum, { message: 'The city must be a valid enum value.' })
-	city: CityEnum
+	// @IsString()
+	// @IsOptional()
+	// @IsEnum(CityEnum, { message: 'The city must be a valid enum value.' })
+	// city: CityEnum
 
 	@IsOptional()
 	isEmailVerified: boolean

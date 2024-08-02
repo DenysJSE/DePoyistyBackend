@@ -29,6 +29,10 @@ export class AuthService {
 			throw new BadRequestException(
 				`The email: ${userDto.email} you provided already exist!`
 			)
+		if (!userDto.password)
+			throw new BadRequestException(
+				'You need to provide password, it should be at least 6 character long!'
+			)
 
 		const verificationToken = await this.generateEmailVerificationToken()
 
@@ -134,7 +138,7 @@ export class AuthService {
 				email: googleUser.email,
 				name: googleUser.name,
 				password: null,
-				city: null,
+				// city: null,
 				isEmailVerified: true,
 				isGoogleAuth: true,
 				verificationToken: null
@@ -182,7 +186,7 @@ export class AuthService {
 			id: user.id,
 			email: user.email,
 			name: user.name,
-			city: user.city,
+			// city: user.city,
 			isAdmin: user.isAdmin
 		}
 	}
