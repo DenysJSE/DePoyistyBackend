@@ -4,6 +4,7 @@ import { RestaurantDto } from './dto/restaurant.dto'
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto'
 import { checkIdIsNumber } from '../utils/id-is-number'
 import { generateSlug } from '../utils/generate-slug'
+import { returnRestaurantObject } from './return-restaurant.object'
 
 @Injectable()
 export class RestaurantService {
@@ -12,7 +13,8 @@ export class RestaurantService {
 	async getRestaurantById(restaurantId: number) {
 		const id = checkIdIsNumber(restaurantId)
 		const restaurant = await this.prisma.restaurant.findUnique({
-			where: { id }
+			where: { id },
+			select: returnRestaurantObject
 		})
 		if (!restaurant)
 			throw new NotFoundException(
@@ -36,7 +38,8 @@ export class RestaurantService {
 
 	async getRestaurantBySlug(restaurantSlug: string) {
 		const restaurant = await this.prisma.restaurant.findUnique({
-			where: { slug: restaurantSlug }
+			where: { slug: restaurantSlug },
+			select: returnRestaurantObject
 		})
 		if (!restaurant)
 			throw new NotFoundException(
