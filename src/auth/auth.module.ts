@@ -12,6 +12,9 @@ import { MailService } from '../mail/mail.service'
 import { MailModule } from '../mail/mail.module'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { SessionSerializer } from './serializer'
+import { DishService } from '../dish/dish.service'
+import { CategoryService } from '../category/category.service'
+import { RestaurantService } from '../restaurant/restaurant.service'
 
 @Module({
 	controllers: [AuthController],
@@ -22,7 +25,10 @@ import { SessionSerializer } from './serializer'
 		PrismaService,
 		UserService,
 		MailService,
-		SessionSerializer
+		SessionSerializer,
+		DishService,
+		CategoryService,
+		RestaurantService
 	],
 	imports: [
 		UserModule,
