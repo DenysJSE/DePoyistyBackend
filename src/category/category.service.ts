@@ -67,10 +67,14 @@ export class CategoryService {
 	async updateCategory(categoryId: number, categoryDto: CategoryDto) {
 		await this.getCategoryById(categoryId)
 
+		const name = convertName(categoryDto.name)
+		if (name.length === 0)
+			throw new BadRequestException('You do not provide any name!')
+
 		return this.prisma.category.update({
 			where: { id: categoryId },
 			data: {
-				name: categoryDto.name,
+				name,
 				slug: generateSlug(categoryDto.name)
 			}
 		})

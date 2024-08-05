@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpCode,
 	Param,
+	Patch,
 	Put,
 	UsePipes,
 	ValidationPipe
@@ -21,7 +22,7 @@ export class UserController {
 	@Get('profile')
 	@Auth()
 	getProfile(@CurrentUser('id') id: number) {
-		return this.userService.getUserById(id)
+		return this.userService.getUserById(id, { favorites: true })
 	}
 
 	@UsePipes(new ValidationPipe())
@@ -38,5 +39,13 @@ export class UserController {
 		return this.userService.deleteProfile(id)
 	}
 
-	// todo: create saveDishToFavorite endpoint when dist service will be done!!!
+	@HttpCode(200)
+	@Auth()
+	@Patch('profile/favorites/:dishId')
+	async saveDishToFavorite(
+		@CurrentUser('id') id: number,
+		@Param('dishId') dishId: string
+	) {
+		return this.userService.saveDishToFavorite(id, +dishId)
+	}
 }

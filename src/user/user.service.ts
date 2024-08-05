@@ -10,10 +10,14 @@ import { hash } from 'bcrypt'
 import { checkIdIsNumber } from '../utils/id-is-number'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { returnUserObject } from './return-user.object'
+import { DishService } from '../dish/dish.service'
 
 @Injectable()
 export class UserService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly dishService: DishService
+	) {}
 
 	async createUser(userDto: UserDto, verificationToken?: string) {
 		const existUser = await this.getUserByEmail(userDto.email)
@@ -94,5 +98,23 @@ export class UserService {
 		return this.prisma.user.findFirst({
 			where: { verificationToken: token }
 		})
+	}
+
+	async saveDishToFavorite(userId: number, dishId: number) {
+		const user = await this.getUserById(userId, { favorites: true })
+		await this.dishService.getDishById(dishId)
+
+		const isExist = user.favorites.some(dish => dish.id === dishId)
+
+		await this.prisma.user.update({
+			where: { id: user.id },
+			data: {
+				favorites: {
+					[isExist ? 'disconnect' : 'connect']: { id: dishId }
+				}
+			}
+		})
+
+		return { message: 'Success!' }
 	}
 }
