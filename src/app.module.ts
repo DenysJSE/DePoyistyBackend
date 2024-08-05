@@ -9,6 +9,7 @@ import { MailModule } from './mail/mail.module'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { PassportModule } from '@nestjs/passport'
 import { RestaurantModule } from './restaurant/restaurant.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
 	imports: [
@@ -26,7 +27,8 @@ import { RestaurantModule } from './restaurant/restaurant.module';
 		AuthModule,
 		UserModule,
 		MailModule,
-		RestaurantModule
+		RestaurantModule,
+		CategoryModule
 	],
 	controllers: [AppController],
 	providers: [AppService, PrismaService]
