@@ -11,6 +11,7 @@ import { PassportModule } from '@nestjs/passport'
 import { RestaurantModule } from './restaurant/restaurant.module'
 import { CategoryModule } from './category/category.module'
 import { DishModule } from './dish/dish.module'
+import { ReviewModule } from './review/review.module';
 
 @Module({
 	imports: [
@@ -30,7 +31,8 @@ import { DishModule } from './dish/dish.module'
 		MailModule,
 		RestaurantModule,
 		CategoryModule,
-		DishModule
+		DishModule,
+		ReviewModule
 	],
 	controllers: [AppController],
 	providers: [AppService, PrismaService]
