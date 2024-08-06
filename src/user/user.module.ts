@@ -2,19 +2,12 @@ import { Module } from '@nestjs/common'
 import { UserService } from './user.service'
 import { UserController } from './user.controller'
 import { PrismaService } from '../prisma.service'
-import { DishService } from '../dish/dish.service'
-import { CategoryService } from '../category/category.service'
-import { RestaurantService } from '../restaurant/restaurant.service'
+import { DishModule } from '../dish/dish.module'
 
 @Module({
 	controllers: [UserController],
-	providers: [
-		UserService,
-		PrismaService,
-		DishService,
-		CategoryService,
-		RestaurantService
-	],
+	providers: [UserService, PrismaService],
+	imports: [DishModule],
 	exports: [UserService]
 })
 export class UserModule {}
