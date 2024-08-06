@@ -2,19 +2,14 @@ import { Module } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { AuthController } from './auth.controller'
 import { PrismaService } from '../prisma.service'
-import { UserService } from '../user/user.service'
 import { UserModule } from '../user/user.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { getJwtConfig } from '../config/jwt.config'
 import { JwtStrategy } from './strategies/jwt.strategy'
-import { MailService } from '../mail/mail.service'
 import { MailModule } from '../mail/mail.module'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { SessionSerializer } from './serializer'
-import { DishService } from '../dish/dish.service'
-import { CategoryService } from '../category/category.service'
-import { RestaurantService } from '../restaurant/restaurant.service'
 
 @Module({
 	controllers: [AuthController],
@@ -23,12 +18,7 @@ import { RestaurantService } from '../restaurant/restaurant.service'
 		JwtStrategy,
 		GoogleStrategy,
 		PrismaService,
-		UserService,
-		MailService,
-		SessionSerializer,
-		DishService,
-		CategoryService,
-		RestaurantService
+		SessionSerializer
 	],
 	imports: [
 		UserModule,
