@@ -12,15 +12,13 @@ import { User } from '@prisma/client'
 import * as bcrypt from 'bcrypt'
 import { Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import { MailService } from '../mail/mail.service'
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private readonly prisma: PrismaService,
 		private readonly userService: UserService,
-		private readonly jwt: JwtService,
-		private readonly mailService: MailService
+		private readonly jwt: JwtService
 	) {}
 
 	async register(userDto: UserDto) {
@@ -38,11 +36,6 @@ export class AuthService {
 
 		const user = await this.userService.createUser(userDto, verificationToken)
 		const tokens = await this.createTokens(user.id)
-
-		await this.mailService.sendVerificationEmail(
-			userDto.email,
-			verificationToken
-		)
 
 		return {
 			user: this.returnUserFields(user),
@@ -162,23 +155,6 @@ export class AuthService {
 
 	private async generateEmailVerificationToken() {
 		return uuidv4()
-	}
-
-	async verifyEmail(token: string) {
-		const user = await this.userService.findUserByToken(token)
-		if (!user) throw new BadRequestException('Invalid verification token!')
-
-		await this.prisma.user.update({
-			where: { id: user.id },
-			data: {
-				isEmailVerified: true,
-				verificationToken: null
-			}
-		})
-
-		await this.mailService.sendConfirmationEmail(user.email)
-
-		return { message: 'Email verified successfully!' }
 	}
 
 	private returnUserFields(user: Partial<User>) {

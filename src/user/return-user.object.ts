@@ -6,5 +6,6 @@ export const returnUserObject: Prisma.UserSelect = {
 	name: true,
 	password: false,
 	// city: true,
-	isEmailVerified: true
+	isEmailVerified: true,
+	isAdmin: true
 }

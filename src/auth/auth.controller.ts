@@ -4,7 +4,6 @@ import {
 	Get,
 	HttpCode,
 	Post,
-	Query,
 	Req,
 	Res,
 	UnauthorizedException,
@@ -112,12 +111,6 @@ export class AuthController {
 		this.authService.addRefreshTokenToResponse(res, refreshToken)
 
 		return response
-	}
-
-	@ApiExcludeEndpoint()
-	@Get('verify-email')
-	async verifyEmail(@Query('token') token: string) {
-		return this.authService.verifyEmail(token)
 	}
 
 	@ApiExcludeEndpoint()

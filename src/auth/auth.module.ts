@@ -7,7 +7,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { getJwtConfig } from '../config/jwt.config'
 import { JwtStrategy } from './strategies/jwt.strategy'
-import { MailModule } from '../mail/mail.module'
 import { GoogleStrategy } from './strategies/google.strategy'
 import { SessionSerializer } from './serializer'
 
@@ -23,7 +22,6 @@ import { SessionSerializer } from './serializer'
 	imports: [
 		UserModule,
 		ConfigModule,
-		MailModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
