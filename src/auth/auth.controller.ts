@@ -134,6 +134,12 @@ export class AuthController {
 		const { refreshToken, ...response } = await this.authService.login(user)
 		this.authService.addRefreshTokenToResponse(res, refreshToken)
 
-		return response
+		const encodedResponse = encodeURIComponent(JSON.stringify(response))
+
+		res.redirect(
+			`${process.env.CLIENT_URL}auth/callback?response=${encodedResponse}`
+		)
+
+		return
 	}
 }
