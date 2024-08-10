@@ -14,7 +14,6 @@ import { ReviewModule } from './review/review.module'
 
 @Module({
 	imports: [
-		PassportModule.register({ session: true }),
 		MailerModule.forRoot({
 			transport: {
 				host: process.env.EMAIL_HOST,

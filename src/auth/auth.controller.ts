@@ -23,6 +23,7 @@ import {
 	ApiTags
 } from '@nestjs/swagger'
 import { AuthResponse, LogoutResponse } from '../docs/auth-response'
+import { User } from '@prisma/client'
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -130,16 +131,15 @@ export class AuthController {
 		@Req() req: Request,
 		@Res({ passthrough: true }) res: Response
 	) {
-		const user = req.user as UserDto
-		const { refreshToken, ...response } = await this.authService.login(user)
-		this.authService.addRefreshTokenToResponse(res, refreshToken)
+		const user = req.user as User
+		const tokens = await this.authService.createTokens(user)
+		this.authService.addRefreshTokenToResponse(res, tokens.refreshToken)
 
+		const response = { user, accessToken: tokens.accessToken }
 		const encodedResponse = encodeURIComponent(JSON.stringify(response))
 
 		res.redirect(
 			`${process.env.CLIENT_URL}auth/callback?response=${encodedResponse}`
 		)
-
-		return
 	}
 }
