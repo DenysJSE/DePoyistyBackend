@@ -35,7 +35,7 @@ export class AuthService {
 		const verificationToken = await this.generateEmailVerificationToken()
 
 		const user = await this.userService.createUser(userDto, verificationToken)
-		const tokens = await this.createTokens(user.id)
+		const tokens = await this.createTokens(user)
 
 		return {
 			user: this.returnUserFields(user),
@@ -46,7 +46,7 @@ export class AuthService {
 
 	async login(authDto: AuthDto) {
 		const user = await this.validateUser(authDto)
-		const tokens = await this.createTokens(user.id)
+		const tokens = await this.createTokens(user)
 
 		return {
 			user: this.returnUserFields(user),
@@ -54,8 +54,8 @@ export class AuthService {
 		}
 	}
 
-	private async createTokens(userId: number) {
-		const data = { id: userId }
+	async createTokens(user: User) {
+		const data = { id: user.id }
 
 		const accessToken = this.jwt.sign(data, {
 			expiresIn: '1h'
@@ -75,9 +75,33 @@ export class AuthService {
 				`The user with email: "${dto.email}" was not found!`
 			)
 
-		if (!user.isGoogleAuth) {
-			const isValid = await bcrypt.compare(dto.password, user.password)
-			if (!isValid) throw new BadRequestException('Invalid password!')
+		if (user.isGoogleAuth && user.password === null) {
+			throw new BadRequestException(
+				'It seems like you signed in through Google recently. Please use it to enter to the system!'
+			)
+		}
+
+		const isValid = await bcrypt.compare(dto.password, user.password)
+		if (!isValid) throw new BadRequestException('Invalid password!')
+
+		return user
+	}
+
+	async validateGoogleAuthUser(profile: any) {
+		const { email, name } = profile
+		let user = await this.prisma.user.findUnique({ where: { email } })
+
+		if (!user) {
+			user = await this.prisma.user.create({
+				data: {
+					email,
+					name,
+					isGoogleAuth: true,
+					verificationToken: null,
+					isEmailVerified: true,
+					password: null
+				}
+			})
 		}
 
 		return user
@@ -91,7 +115,7 @@ export class AuthService {
 			isAdmin: true
 		})
 
-		const tokens = await this.createTokens(user.id)
+		const tokens = await this.createTokens(user)
 
 		return {
 			user: this.returnUserFields(user),
@@ -122,35 +146,6 @@ export class AuthService {
 			secure: true,
 			sameSite: 'none'
 		})
-	}
-
-	async oAuthGoogle(googleUser: UserDto) {
-		const user = await this.userService.getUserByEmail(googleUser.email)
-		if (!user) {
-			const dto = {
-				email: googleUser.email,
-				name: googleUser.name,
-				password: null,
-				// city: null,
-				isEmailVerified: true,
-				isGoogleAuth: true,
-				verificationToken: null
-			}
-
-			const responseUser = await this.userService.createUser(dto)
-			const tokens = await this.createTokens(responseUser.id)
-
-			return {
-				...responseUser,
-				...tokens
-			}
-		}
-
-		const tokens = await this.createTokens(user.id)
-		return {
-			...user,
-			...tokens
-		}
 	}
 
 	private async generateEmailVerificationToken() {
