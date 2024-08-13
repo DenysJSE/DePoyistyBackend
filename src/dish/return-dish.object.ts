@@ -19,5 +19,18 @@ export const returnDishObject: Prisma.DishSelect = {
 			address: true
 		}
 	},
-	reviews: true
+	reviews: {
+		select: {
+			id: true,
+			text: true,
+			rating: true,
+			createdAt: true,
+			user: {
+				select: {
+					name: true
+				}
+			}
+		},
+		orderBy: { createdAt: 'desc' }
+	}
 }
