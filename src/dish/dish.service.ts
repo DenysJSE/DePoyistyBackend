@@ -23,7 +23,8 @@ export class DishService {
 
 	async getAllDishes() {
 		return this.prisma.dish.findMany({
-			select: returnDishObject
+			select: returnDishObject,
+			orderBy: { id: 'asc' }
 		})
 	}
 

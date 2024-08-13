@@ -43,7 +43,6 @@ export class DishController {
 		type: FullDishResponse,
 		description: 'Return dish searched by id'
 	})
-	@Auth('admin')
 	@Get('by-id/:id')
 	getDishById(@Param('id') dishId: string) {
 		return this.dishService.getDishById(+dishId)
