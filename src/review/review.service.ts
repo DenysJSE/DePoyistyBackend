@@ -39,7 +39,7 @@ export class ReviewService {
 		await this.userService.getUserById(userId)
 		await this.dishService.getDishById(dishId)
 
-		return this.prisma.review.create({
+		const newReview = await this.prisma.review.create({
 			data: {
 				text: reviewDto.text,
 				rating: reviewDto.rating,
@@ -51,6 +51,27 @@ export class ReviewService {
 				}
 			}
 		})
+
+		const reviews = await this.prisma.review.findMany({
+			where: { dishId },
+			select: { rating: true }
+		})
+
+		const averageRating = reviews.length
+			? parseFloat(
+					(
+						reviews.reduce((acc, review) => acc + review.rating, 0) /
+						reviews.length
+					).toFixed(1)
+				)
+			: 0
+
+		await this.prisma.dish.update({
+			where: { id: dishId },
+			data: { rating: averageRating }
+		})
+
+		return newReview
 	}
 
 	async leaveRestaurantReview(

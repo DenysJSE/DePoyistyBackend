@@ -11,7 +11,7 @@ async function bootstrap() {
 	app.setGlobalPrefix('api')
 	app.enableCors({
 		origin: ['http://localhost:5173', 'https://depoyisty.netlify.app'],
-		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 		credentials: true
 	})
 	app.use(cookieParser())
