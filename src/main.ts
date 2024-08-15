@@ -10,7 +10,11 @@ async function bootstrap() {
 
 	app.setGlobalPrefix('api')
 	app.enableCors({
-		origin: ['http://localhost:5173', 'https://depoyisty.netlify.app'],
+		origin: [
+			'http://localhost:5173',
+			'https://depoyisty.netlify.app',
+			'https://depoyisty-dev.netlify.app'
+		],
 		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 		credentials: true
 	})
