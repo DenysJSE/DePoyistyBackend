@@ -50,7 +50,9 @@ export class RestaurantService {
 	}
 
 	async getAllRestaurants() {
-		return this.prisma.restaurant.findMany()
+		return this.prisma.restaurant.findMany({
+			select: returnRestaurantObject
+		})
 	}
 
 	async createRestaurant(restaurantDto: RestaurantDto) {
